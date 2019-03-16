@@ -1,0 +1,15 @@
+.vscode/
+Chess positions/
+Pieces_png/
+Snapshots/
+__pycache__/
+_generated_data/
+fen_data.txt
+file_dict.json
+output_games.pgn
+test_games.pgn
+weights_model_avg_corners.h5
+weights_model_corners_broad.h5
+weights_piece_broad.h5
+weights_piece_cnn.h5
+weights_piece_extended_cnn.h5

@@ -5,9 +5,7 @@ import matplotlib.image as mpimg
 
 import numpy as np
 import tensorflow as tf
-
-# def max_pool_2x2(x):
-# return tf.nn.max_pool(x, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
+import Fen_string_manipulations as fen
 
 
 def weight_variable(shape, name=None):
@@ -26,27 +24,12 @@ def bias_variable(shape, name=None):
         return tf.Variable(initial)
 
 
-# def conv2d(x, W):
-#     return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 def conv2d(x, W, stride):
     return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1], padding='SAME')
 
 
-# PIC_HEIGHT = 64
-# PIC_WIDTH = 64
 PIC_HEIGHT = 384
 PIC_WIDTH = 216
-
-def make_char_dict():
-    char_dict = {}
-    for i, c in enumerate(CHARS):
-        char_dict[c] = i
-    return char_dict
-
-DIR_NAME = './generated_data/'
-CHARS = '0KQRBNPkqrbnp'
-CHARS_LENGTH = len(CHARS)
-CHAR_DICT = make_char_dict()
 
 class Network:
     NETWORK_FILE = "./view.ckpt"
@@ -75,8 +58,8 @@ class Network:
         return output_layer
 
     def layer_output(self, layer_flatten, dim_in):
-        W_fc = weight_variable([dim_in, PIC_HEIGHT * PIC_WIDTH * CHARS_LENGTH])
-        b_fc = bias_variable([PIC_HEIGHT * PIC_WIDTH * CHARS_LENGTH])
+        W_fc = weight_variable([dim_in, PIC_HEIGHT * PIC_WIDTH * fen.CHARS_LENGTH])
+        b_fc = bias_variable([PIC_HEIGHT * PIC_WIDTH * fen.CHARS_LENGTH])
 
         self.matmul_fc = tf.matmul(layer_flatten, W_fc) + b_fc
         ################################################
@@ -126,19 +109,20 @@ class Network:
         # output_layer = self.layer_output(
         #     flatten, ROW_DIM * COLUMN_DIM * output_dim)
 
-        W_fc = weight_variable([16 * 9 * output_dim, 8 * 8 * CHARS_LENGTH], 'W')
-        b_fc = bias_variable([8 * 8 * CHARS_LENGTH], 'b')
+        W_fc = weight_variable([16 * 9 * output_dim, 8 * 8 * fen.CHARS_LENGTH], 'W')
+        b_fc = bias_variable([8 * 8 * fen.CHARS_LENGTH], 'b')
         matmul_fc = tf.add(tf.matmul(flatten, W_fc), b_fc, name = 'matmul')
 
-        information = tf.reshape(matmul_fc, [-1, 8*8, CHARS_LENGTH])
+        information = tf.reshape(matmul_fc, [-1, 8*8, fen.CHARS_LENGTH])
         self.inform = tf.argmax(information, axis = 2)
 
         ###############################################
         # self.output_layer = tf.nn.sigmoid(matmul_fc, name = 'sigmoid')
         # self.cost = tf.square(tf.subtract(self.y_, self.output_layer, name = 'subtract'), name = 'squared_diff')
         ###############################################
-        self.output = tf.reshape(matmul_fc, [-1, 8 * 8, CHARS_LENGTH])
+        self.output = tf.reshape(matmul_fc, [-1, 8 * 8, fen.CHARS_LENGTH])
         self.cost = tf.losses.sparse_softmax_cross_entropy(self.y_, self.output)
+        # self.cost = tf.nn.softmax_cross_entropy_with_logits_v2(labels=self.y_, logits=self.output) # Probati!!!
 
         # all_zeros = tf.zeros(tf.shape(self.y_))
         # zeroed_y_ = tf.where(self.y_ < 0, all_zeros, self.y_)
@@ -181,20 +165,20 @@ def make_out_layer(fen_string):
     out_layer = np.zeros(64)
     for i in range(len(fen_string)):
         char_at_i = fen_string[i]
-        out_layer[i] = CHAR_DICT[char_at_i]
+        out_layer[i] = fen.CHAR_DICT[char_at_i]
     return out_layer
 
 def make_one_hot(fen_string):
-    one_hot_array = np.zeros((64, CHARS_LENGTH))
+    one_hot_array = np.zeros((64, fen.CHARS_LENGTH))
     for i in range(len(fen_string)):
         char_at_i = fen_string[i]
-        one_hot_array[i, CHAR_DICT[char_at_i]] = 1
+        one_hot_array[i, fen.CHAR_DICT[char_at_i]] = 1
     return one_hot_array
 
 def array_to_fen(out_array):
     s = ""
     for num in out_array:
-        s += CHARS[int(num)]
+        s += fen.CHARS[int(num)]
     return s
 
 def train_network(net, saver=None, load_net=True):
