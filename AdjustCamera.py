@@ -16,6 +16,7 @@ def adjust_camera(cv2):
     cap.release()
     cv2.destroyAllWindows()
 
+
 def main():
     adjust_camera(cv2)
 
