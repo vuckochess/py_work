@@ -1,10 +1,11 @@
-import numpy as np
 import pickle
-from PIL import Image, ImageTk, ImageDraw
-import matplotlib.pyplot as plt
 
-import Corner_model_keras as cmk
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image, ImageDraw, ImageTk
+
 import Chessboard_manipulations as cbm
+import Corner_model_keras as cmk
 import Fen_string_manipulations as fen
 
 Options = fen.Options
