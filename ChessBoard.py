@@ -11,18 +11,8 @@ import json
 import Chessboard_manipulations as cbm
 import Fen_string_manipulations as fen
 
-piece_dict = {'r': "BlackRook",
-              'n': "BlackKnight",
-              'b': "BlackBishop",
-              'q': "BlackQueen",
-              'k': "BlackKing",
-              'p': "BlackPawn",
-              'R': "WhiteRook",
-              'N': "WhiteKnight",
-              'B': "WhiteBishop",
-              'Q': "WhiteQueen",
-              'K': "WhiteKing",
-              'P': "WhitePawn"}
+piece_dict = {'r': "BlackRook", 'n': "BlackKnight", 'b': "BlackBishop", 'q': "BlackQueen", 'k': "BlackKing", 'p': "BlackPawn",
+              'R': "WhiteRook", 'N': "WhiteKnight", 'B': "WhiteBishop", 'Q': "WhiteQueen", 'K': "WhiteKing", 'P': "WhitePawn"}
 
 
 def scale_and_remove_color(picture_file_name, new_file_name):
@@ -64,19 +54,16 @@ def insert_kings_into_picture(img_name, coord_matrix, scale_matrix):
     pieces_dir = './Chess positions/Night positions/'
     piece = 'Black_Pawn'
     fg_picture = Image.open(pieces_dir + piece + '_Night.png', 'r')
-    new_file_name = ('./Chess positions/Night positions/'
-                     + 'Position_with_Bishops.JPG')
+    new_file_name = './Chess positions/Night positions/Position_with_Bishops.JPG'
 
     width, height = fg_picture.size
     for row_c, row_s in zip(coord_matrix, scale_matrix):
         for elem_c, elem_s in zip(row_c, row_s):
-            width_s, height_s = int(width*elem_s), int(height*elem_s)
+            width_s, height_s = int(width * elem_s), int(height * elem_s)
             scaled_fg_picture = fg_picture.resize(
                 (int(width_s), int(height_s)))
-            bg_picture.paste(
-                scaled_fg_picture,
-                (int(elem_c[0])-width_s*5//9, int(elem_c[1])-height_s*2//3),
-                scaled_fg_picture)
+            bg_picture.paste(scaled_fg_picture, (int(
+                elem_c[0])-width_s*5//9, int(elem_c[1])-height_s*2//3), scaled_fg_picture)
     bg_picture.save(new_file_name)
 
 
@@ -137,17 +124,11 @@ class MakePngFile:
                 break
             board_string = board_string[0:64]
             file_dict[file_name] = board_string
-            png_file_name = (MakePngFile.DIR_NAME
-                             + 'Generated files/'
-                             + file_name)
+            png_file_name = MakePngFile.DIR_NAME + 'Generated files/' + file_name
             self.generate_png_files(board_string, png_file_name)
-            new_file_name = (MakePngFile.DIR_NAME
-                             + 'Generated files/Grayscale/'
-                             + file_name)
-            scale_and_remove_color(POSITIONS_DIR + file_name,
-                                   new_file_name)
-            # insert_png_into_picture(POSITIONS_DIR + file_name,
-            #                       png_file_name, new_file_name)
+            new_file_name = MakePngFile.DIR_NAME + 'Generated files/Grayscale/' + file_name
+            scale_and_remove_color(POSITIONS_DIR + file_name, new_file_name)
+            # insert_png_into_picture(POSITIONS_DIR + file_name, png_file_name, new_file_name)
 
         print(len(file_dict))
         json_file_name = MakePngFile.DIR_NAME + 'file_dict.json'
@@ -179,15 +160,12 @@ class MakePngFile:
         json_file.write(json_data)
         json_file.close()
         # plt.imshow(img, cmap="gray")
-        # plt.imsave('./generated_data/test_img' + str(file_num) + '.jpg',
-        #               img, cmap='gray')
+        # plt.imsave('./generated_data/test_img' + str(file_num) + '.jpg', img, cmap='gray')
         # plt.show()
 
     def generate_png_files(self, board_string, filename):
-        big_weight = (MakePngFile.SQUARE_DIM*MakePngFile.ROW_DIM
-                      + MakePngFile.BORDER)
-        big_height = (MakePngFile.SQUARE_DIM*MakePngFile.COLUMN_DIM
-                      + MakePngFile.BORDER)
+        big_weight = MakePngFile.SQUARE_DIM * MakePngFile.ROW_DIM + MakePngFile.BORDER
+        big_height = MakePngFile.SQUARE_DIM * MakePngFile.COLUMN_DIM + MakePngFile.BORDER
         self.img = Image.new('L', (big_height, big_weight), color='white')
         self.draw_board = ImageDraw.Draw(self.img)
         self.draw_chess_board()
@@ -196,18 +174,14 @@ class MakePngFile:
         self.img.save(filename)
 
     def add_pieces(self, board_string):
-        for pos in range(MakePngFile.ROW_DIM*MakePngFile.COLUMN_DIM):
+        for pos in range(MakePngFile.ROW_DIM * MakePngFile.COLUMN_DIM):
             self.draw_piece(pos//8, pos % 8, board_string[pos])
 
     def fill_square(self, pos_row, pos_col, color):
         allign_0 = MakePngFile.BORDER
         allign_1 = MakePngFile.BORDER + MakePngFile.SQUARE_DIM
-        self.draw_board.rectangle((
-            MakePngFile.SQUARE_DIM*pos_col + allign_0,
-            MakePngFile.SQUARE_DIM*pos_row + allign_0,
-            MakePngFile.SQUARE_DIM*pos_col + allign_1,
-            MakePngFile.SQUARE_DIM*pos_row + allign_1),
-            fill=color)
+        self.draw_board.rectangle((MakePngFile.SQUARE_DIM*pos_col + allign_0, MakePngFile.SQUARE_DIM*pos_row + allign_0,
+                                   MakePngFile.SQUARE_DIM*pos_col + allign_1, MakePngFile.SQUARE_DIM*pos_row + allign_1), fill=color)
 
     def draw_piece(self, pos_row, pos_col, piece):
         if piece == '0':
@@ -215,25 +189,17 @@ class MakePngFile:
 
         dim = MakePngFile.SQUARE_DIM
         piece_img = Image.open('./Pieces_png/' + piece_dict[piece] + '.png')
-        self.img.paste(piece_img,
-                       (dim*pos_col + MakePngFile.BORDER,
-                        dim*pos_row + MakePngFile.BORDER),
-                       piece_img)
+        self.img.paste(piece_img, (dim*pos_col + MakePngFile.BORDER,
+                                   dim*pos_row + MakePngFile.BORDER), piece_img)
 
     def draw_chess_board(self):
 
         for i in range(MakePngFile.ROW_DIM + 1):
-            self.draw_board.line((
-                MakePngFile.BORDER,
-                i*MakePngFile.SQUARE_DIM + MakePngFile.BORDER,
-                MakePngFile.COLUMN_DIM*MakePngFile.SQUARE_DIM + MakePngFile.BORDER,
-                i*MakePngFile.SQUARE_DIM + MakePngFile.BORDER))
+            self.draw_board.line((MakePngFile.BORDER, i * MakePngFile.SQUARE_DIM + MakePngFile.BORDER, MakePngFile.COLUMN_DIM *
+                                  MakePngFile.SQUARE_DIM + MakePngFile.BORDER, i*MakePngFile.SQUARE_DIM + MakePngFile.BORDER))
         for i in range(MakePngFile.COLUMN_DIM + 1):
-            self.draw_board.line((
-                i*MakePngFile.SQUARE_DIM + MakePngFile.BORDER,
-                MakePngFile.BORDER,
-                i*MakePngFile.SQUARE_DIM + MakePngFile.BORDER,
-                MakePngFile.ROW_DIM*MakePngFile.SQUARE_DIM + MakePngFile.BORDER))
+            self.draw_board.line((i * MakePngFile.SQUARE_DIM + MakePngFile.BORDER, MakePngFile.BORDER, i *
+                                  MakePngFile.SQUARE_DIM + MakePngFile.BORDER, MakePngFile.ROW_DIM*MakePngFile.SQUARE_DIM + MakePngFile.BORDER))
         for row in range(MakePngFile.ROW_DIM):
             for column in range(MakePngFile.COLUMN_DIM):
                 if (row + column) % 2 == 0:

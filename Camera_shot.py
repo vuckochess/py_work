@@ -2,7 +2,6 @@ import time
 import winsound
 import cv2
 
-
 def make_snapshot(cv2):
     cap = cv2.VideoCapture(0)
     cap.set(3, 1920)
@@ -30,9 +29,9 @@ def make_snapshot(cv2):
         print(file_name)
         counter += 1
 
+
     cap.release()
     cv2.destroyAllWindows()
-
 
 def main():
     make_snapshot(cv2)
